@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Students</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f4f6f9;
+        }
+
+        /* Navbar */
+        nav {
+            background: #2c3e50;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+        }
+
+        nav ul li {
+            margin-left: 25px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+
+        nav ul li a:hover {
+            color: #1abc9c;
+        }
+
+        /* Table Section */
+        .table-container {
+            width: 95%;
+            margin: 40px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background: #2c3e50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background: #f2f2f2;
+        }
+
+        .delete-btn {
+            padding: 5px 10px;
+            background: crimson;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .delete-btn:hover {
+            background: darkred;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 20px;
+            color: #777;
+        }
+    </style>
+</head>
+
+<body onload="displayStudents()">
+
+    <nav>
+        <div>🎓 Student System</div>
+        <ul>
+            <li><a href="./homepage.html">Home</a></li>
+            <li><a href="./addstudent.html">Add Student</a></li>
+            <li><a href="./viewstudent.html">View Students</a></li>
+            <li><a href="#" onclick="logout()">Logout</a></li>
+        </ul>
+    </nav>
+
+    <div class="table-container">
+        <h2>Student Records</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Roll</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Gender</th>
+                    <th>DOB</th>
+                    <th>Department</th>
+                    <th>Address</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="studentTable">
+            </tbody>
+        </table>
+
+        <div id="emptyMessage" class="empty-message"></div>
+    </div>
+
+    <script>
+        function logout() {
+            window.location.href = "./addstudent.html";
+        }
+
+        function displayStudents() {
+
+            const table = document.getElementById("studentTable");
+            const emptyMessage = document.getElementById("emptyMessage");
+
+            let students = JSON.parse(localStorage.getItem("students")) || [];
+
+            table.innerHTML = "";
+
+            if (students.length === 0) {
+                emptyMessage.textContent = "No student records found.";
+                return;
+            } else {
+                emptyMessage.textContent = "";
+            }
+
+            students.forEach((student, index) => {
+                const row = `
+                    <tr>
+                        <td>${student.name}</td>
+                        <td>${student.roll}</td>
+                        <td>${student.email}</td>
+                        <td>${student.phone}</td>
+                        <td>${student.gender}</td>
+                        <td>${student.dob}</td>
+                        <td>${student.department}</td>
+                        <td>${student.address}</td>
+                        <td>
+                            <button class="delete-btn" onclick="deleteStudent(${index})">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                table.innerHTML += row;
+            });
+        }
+
+        function deleteStudent(index) {
+            let students = JSON.parse(localStorage.getItem("students")) || [];
+            students.splice(index, 1);
+            localStorage.setItem("students", JSON.stringify(students));
+            displayStudents();
+        }
+    </script>
+
+</body>
+</html>
